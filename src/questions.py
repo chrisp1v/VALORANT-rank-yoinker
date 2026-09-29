@@ -26,6 +26,7 @@ FLAGS_OPTS = {
     "short_ranks": "Short rank names instead of long ones",
     "truncate_skins": "Truncate long skin names if the window is too small",
     "truncate_names": "Truncate long player names if the window is too small",
+    "party_from_history": "Detect parties of non-friends from recent match history (more API calls)",
 
 }
 

@@ -20,6 +20,7 @@ from src.errors import Error
 from src.Loadouts import Loadouts
 from src.logs import Logging
 from src.names import Names
+from src.party_history import PartyHistory
 from src.player_stats import PlayerStats
 from src.presences import Presences
 from src.rank import Rank
@@ -104,6 +105,7 @@ try:
 
     rank = Rank(Requests, log, content, before_ascendant_seasons)
     pstats = PlayerStats(Requests, log, cfg)
+    partyHistory = PartyHistory(Requests, log)
 
     namesClass = Names(Requests, log)
 
@@ -265,6 +267,7 @@ try:
                     reset_match_player_cache()
                     if hasattr(pstats, "clear_runtime_cache"):
                         pstats.clear_runtime_cache()
+                        partyHistory.clear_runtime_cache()
                 log(f"new game state: {game_state}")
                 loop.close()
             firstTime = False
@@ -276,6 +279,7 @@ try:
             reset_match_player_cache()
             if hasattr(pstats, "clear_runtime_cache"):
                 pstats.clear_runtime_cache()
+                partyHistory.clear_runtime_cache()
 
         if game_state == "DISCONNECTED":
             richConsole.print("[yellow]Disconnected from Valorant. Attempting to reconnect...[/yellow]")
@@ -306,6 +310,7 @@ try:
             reset_match_player_cache()
             if hasattr(pstats, "clear_runtime_cache"):
                 pstats.clear_runtime_cache()
+                partyHistory.clear_runtime_cache()
             continue
 
         if True:
@@ -403,6 +408,11 @@ try:
                     partyOBJ = menu.get_party_json(
                         namesClass.get_players_puuid(Players), presence
                     )
+                    if cfg.get_feature_flag("party_from_history"):
+                        status.update("Detecting parties from match history...")
+                        partyOBJ = partyHistory.get_party_json(
+                            Players, coregame_match_id, partyOBJ
+                        )
                     # log(f"retrieved names dict: {names}")
                     Players.sort(
                         key=lambda Players: Players["PlayerIdentity"].get(
@@ -715,6 +725,11 @@ try:
                     partyOBJ = menu.get_party_json(
                         namesClass.get_players_puuid(Players), presence
                     )
+                    if cfg.get_feature_flag("party_from_history"):
+                        status.update("Detecting parties from match history...")
+                        partyOBJ = partyHistory.get_party_json(
+                            Players, pregame_match_id, partyOBJ
+                        )
                     partyMembers = menu.get_party_members(Requests.puuid, presence)
                     partyMembersList = [a["Subject"] for a in partyMembers]
                     # log(f"retrieved names dict: {names}")
@@ -743,10 +758,10 @@ try:
                                     # PARTY_ICON
                                     party_icon = PARTYICONLIST[partyCount]
                                     partyNum = partyCount + 1
+                                    partyCount += 1
                                 else:
                                     # PARTY_ICON
                                     party_icon = partyIcons[party]
-                                partyCount += 1
                         playerRank, previousPlayerRank, ppstats = get_or_fetch_rank_and_stats(
                             player["Subject"], pregame_match_id
                         )
@@ -922,6 +937,7 @@ try:
                 reset_match_player_cache()
                 if hasattr(pstats, "clear_runtime_cache"):
                     pstats.clear_runtime_cache()
+                    partyHistory.clear_runtime_cache()
 
                 server = ""
                 already_played_with = []

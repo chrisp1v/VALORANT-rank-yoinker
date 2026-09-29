@@ -218,5 +218,6 @@ DEFAULT_CONFIG = {
         "short_ranks": False,
         "truncate_skins": True,
         "truncate_names": True,
+        "party_from_history": True,
     }
 }
