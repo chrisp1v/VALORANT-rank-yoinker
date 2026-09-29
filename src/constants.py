@@ -195,6 +195,7 @@ DEFAULT_CONFIG = {
     "weapon": "Vandal",
     "chat_limit": 5,
     "table": {
+        "party": True,
         "skin": True,
         "rr": True,
         "earned_rr": True,

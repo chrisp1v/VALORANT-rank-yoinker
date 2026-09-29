@@ -2,6 +2,7 @@ from InquirerPy.base.control import Choice
 from src.constants import DEFAULT_CONFIG, WEAPONS
 
 TABLE_OPTS = {
+    "party": "Party (colored square per premade group)",
     "skin": "Skin",
     "rr": "Ranked Rating",
     "earned_rr": "RR gained or lost (and AFK Penalties)",
